@@ -1,0 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* These are tailwind layer, base is in bottom, components on top of it and 
+utilities is the topmost; base uses normalize to make application consistent
+across browsers, component contains containers, grids etc. */
