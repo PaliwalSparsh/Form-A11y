@@ -1,3 +1,10 @@
+### For me
+```
+pawls add /Users/sparshpaliwal/Desktop/repos/pawls/skiff_files/apps/pawls/papers/sample_form.pdf
+pawls preprocess ocr skiff_files/apps/pawls/papers
+pawls assign skiff_files/apps/pawls/papers development_user@example.com --all
+```
+
 <div align="center">
     <img src="./ui/src/components/sidebar/pawlsLogo.png" width="400"/>
 
