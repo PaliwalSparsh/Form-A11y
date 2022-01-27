@@ -13,7 +13,7 @@ import { createGlobalStyle } from 'styled-components';
 import { Result, Spin } from '@allenai/varnish';
 import { BrowserRouter, Route, Redirect } from 'react-router-dom';
 
-import { PDFPage } from './pages';
+import { PDFPage, HomePage } from './pages';
 import { CenterOnPage } from './components';
 import { getAllocatedPaperStatus, PaperStatus } from './api';
 import { QuestionCircleOutlined } from '@ant-design/icons';
@@ -57,6 +57,7 @@ const App = () => {
             <BrowserRouter>
                 <Route path="/" exact component={RedirectToFirstPaper} />
                 <Route path="/pdf/:sha" component={PDFPage} />
+                <Route path="/home" component={HomePage} />
             </BrowserRouter>
             <GlobalStyles />
         </>

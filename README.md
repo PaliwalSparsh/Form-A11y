@@ -1,4 +1,8 @@
 ### For me
+
+just `yarn install` to install dependencies and start with development.
+
+Preprocessing PDF
 ```
 pawls add /Users/sparshpaliwal/Desktop/repos/pawls/skiff_files/apps/pawls/papers/sample_form.pdf
 pawls preprocess ocr skiff_files/apps/pawls/papers
