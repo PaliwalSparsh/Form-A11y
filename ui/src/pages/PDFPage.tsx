@@ -104,6 +104,7 @@ export const PDFPage = () => {
         setSelectedAnnotations([]);
     };
 
+    // get labels for the current document
     useEffect(() => {
         getLabels().then((labels) => {
             setLabels(labels);
@@ -111,6 +112,7 @@ export const PDFPage = () => {
         });
     }, []);
 
+    // get relations for the current document
     useEffect(() => {
         getRelations().then((relations) => {
             setRelationLabels(relations);
@@ -118,6 +120,7 @@ export const PDFPage = () => {
         });
     }, [sha]);
 
+    // get status for the current document, can user edit it or is it just read-only.
     useEffect(() => {
         getAllocatedPaperStatus()
             .then((allocation) => {
@@ -137,6 +140,7 @@ export const PDFPage = () => {
             });
     }, [sha]);
 
+    // get annotations for the current document
     useEffect(() => {
         setDocument(undefined);
         setViewState(ViewState.LOADING);
