@@ -3,7 +3,7 @@ import React, { useContext, useCallback, useState, useEffect } from 'react';
 import styled, { ThemeContext } from 'styled-components';
 import { useParams } from 'react-router-dom';
 import * as pdfjs from 'pdfjs-dist';
-import { Result, Progress, notification, Button } from '@allenai/varnish';
+import { Result, Progress, notification } from '@allenai/varnish';
 
 import { QuestionCircleOutlined } from '@ant-design/icons';
 
@@ -30,7 +30,7 @@ import {
 } from '../context';
 
 import * as listeners from '../listeners';
-import { Header } from '../components/formA11y';
+import { Header, Button } from '../components/formA11y';
 
 enum ViewState {
     LOADING,
@@ -271,16 +271,20 @@ export const HomePage = () => {
 };
 
 const HomeContainer = (props) => {
+    const [currentLayer, setCurrentLayer] = useState(0);
     return (
         <Container>
-            <Header />
+            <Header currentLayer={currentLayer} />
             <ContentContainer>
                 <LeftSidebar />
                 <FormContainer>{props.children}</FormContainer>
                 <RightSidebar />
             </ContentContainer>
             <Footer>
-                <Button type="primary" shape="round">
+                <Button
+                    type="primary"
+                    shape="round"
+                    onClick={() => setCurrentLayer(currentLayer + 1)}>
                     Proceed to Next Layer
                 </Button>
             </Footer>
