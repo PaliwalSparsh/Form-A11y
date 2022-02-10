@@ -1,19 +1,47 @@
 // @ts-nocheck
 import styled from 'styled-components';
-import StepProgressBar from './StepProgressBar';
+import Steps from './Steps';
 
-export const Header = () => {
+export const Header = ({ currentLayer }) => {
     return (
         <Container>
             <LogoContainer>
                 <img src="/logo.svg" />
             </LogoContainer>
             <StepsContainer>
-                <StepProgressBar />
+                <Steps current={currentLayer} stepInfo={stepInfo} />
             </StepsContainer>
         </Container>
     );
 };
+
+const stepInfo = [
+    {
+        title: 'Section',
+        description:
+            'Mark the area you want to fix first. We will go through the form in small chunks. Ensure that fields or groups (radioboxes) are completely included and not cut off in half .',
+    },
+    {
+        title: 'Fields',
+        description:
+            'Ensure all form fields have a box and a field type present on them. If not, draw a box using the mouse and assign the field type.',
+    },
+    {
+        title: 'Labels',
+        description:
+            'Ensure all form fields have a label associated to them. If not, select the field and use update label from the popup.',
+    },
+    {
+        title: 'Groups',
+        description:
+            'Ensure the checkbox and radiobox are grouped properly and have group names. If not, you can select multiple boxes by dragging or Shift+Click and use popup menu to group fields. ',
+    },
+    {
+        title: 'Tooltips',
+        description:
+            'Ensure these field descriptions (tooltips) are sufficient. If needed, add more information about the field using the edit button.',
+    },
+];
 
 const LogoContainer = styled.div`
     width: 10%;
