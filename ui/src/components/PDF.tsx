@@ -142,6 +142,7 @@ const Page = ({ pageInfo, onError }: PageProps) => {
                 setScale(pageInfo.scale);
                 determinePageVisiblity();
             };
+
             window.addEventListener('resize', handleResize);
             window.addEventListener('scroll', determinePageVisiblity);
             return () => {
@@ -273,17 +274,13 @@ export const PDF = () => {
     );
 };
 
-const PageAnnotationsContainer = styled.div(
-    ({ theme }) => `
+const PageAnnotationsContainer = styled.div`
     position: relative;
-    box-shadow: 2px 2px 4px 0 rgba(0, 0, 0, 0.2);
-    margin: 0 0 ${theme.spacing.xs};
 
     &:last-child {
         margin-bottom: 0;
     }
-`
-);
+`;
 
 const PageCanvas = styled.canvas`
     display: block;

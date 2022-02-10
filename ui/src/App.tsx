@@ -45,7 +45,7 @@ const RedirectToFirstPaper = () => {
             );
         }
 
-        return <Redirect to={`/pdf/${sha}`} />;
+        return <Redirect to={`/home/${sha}`} />;
     }, [papers]);
 
     return content;
@@ -57,7 +57,7 @@ const App = () => {
             <BrowserRouter>
                 <Route path="/" exact component={RedirectToFirstPaper} />
                 <Route path="/pdf/:sha" component={PDFPage} />
-                <Route path="/home" component={HomePage} />
+                <Route path="/home/:sha" component={HomePage} />
             </BrowserRouter>
             <GlobalStyles />
         </>
