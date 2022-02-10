@@ -196,7 +196,7 @@ export class PDFPageInfo {
         }
         const pdfPageWidth = this.page.view[2] - this.page.view[1];
         const domPageWidth = this.bounds.right - this.bounds.left;
-        return domPageWidth / pdfPageWidth;
+        return (domPageWidth / pdfPageWidth) * 0.3;
     }
 }
 
