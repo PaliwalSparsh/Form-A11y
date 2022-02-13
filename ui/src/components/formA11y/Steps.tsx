@@ -2,21 +2,20 @@
 
 import styled from 'styled-components';
 import config from '../../config';
-// import { Steps } from '@allenai/varnish';
 
-// const { Step } = Steps;
+const blueBackground = { backgroundColor: config.color.blue };
+const lineGrayBackground = { backgroundColor: config.color.gray.line };
+const lightGrayBackground = { backgroundColor: config.color.gray.light };
 
 const Step = ({ title, completed = false, active = false, first = false, last = false }) => {
-    const firstStyle = first ? { backgroundColor: config.color.gray.line } : {};
-    const lastStyle = last ? { backgroundColor: config.color.gray.line } : {};
+    const firstStyle = first ? lineGrayBackground : {};
+    const lastStyle = last ? lineGrayBackground : {};
 
-    const completedStyle = completed
-        ? { backgroundColor: config.color.blue }
-        : { backgroundColor: config.color.gray.light };
+    const completedStyle = completed ? blueBackground : lightGrayBackground;
 
-    const activeStyleSecondTail = active ? { backgroundColor: config.color.gray.light } : {};
-    const activeStyleFirstTail = active ? { backgroundColor: config.color.blue } : {};
-    const activeStyleDot = active ? { backgroundColor: config.color.blue } : {};
+    const activeStyleSecondTail = active ? lightGrayBackground : {};
+    const activeStyleFirstTail = active ? blueBackground : {};
+    const activeStyleDot = active ? blueBackground : {};
 
     return (
         <StepContainer>
