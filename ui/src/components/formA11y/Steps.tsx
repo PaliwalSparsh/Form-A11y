@@ -3,7 +3,7 @@
 import styled from 'styled-components';
 import config from '../../config';
 
-const blueBackground = { backgroundColor: config.color.blue };
+const blueBackground = { backgroundColor: config.color.blue.medium };
 const lineGrayBackground = { backgroundColor: config.color.gray.line };
 const lightGrayBackground = { backgroundColor: config.color.gray.light };
 
@@ -96,7 +96,7 @@ const TailAndDotContainer = styled.div`
 const Tail = styled.div`
     width: 45%;
     height: 2px;
-    background-color: ${config.color.blue};
+    background-color: ${config.color.blue.medium};
 `;
 
 const DotContainer = styled.div`
@@ -107,7 +107,7 @@ const Dot = styled.div`
     width: 8px;
     border-radius: 50%;
     height: 8px;
-    background-color: ${config.color.blue};
+    background-color: ${config.color.blue.medium};
     margin: auto;
 `;
 
