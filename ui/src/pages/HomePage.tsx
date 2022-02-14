@@ -30,7 +30,7 @@ import {
 } from '../context';
 
 import * as listeners from '../listeners';
-import { Header, Button } from '../components/formA11y';
+import { Header, Button, IconButton, DuplicateModal } from '../components/formA11y';
 
 enum ViewState {
     LOADING,
@@ -278,7 +278,11 @@ const HomeContainer = (props) => {
             <ContentContainer>
                 <LeftSidebar />
                 <FormContainer>{props.children}</FormContainer>
-                <RightSidebar />
+                <RightSidebar>
+                    <IconButton type="cursor" />
+                    <IconButton type="field" />
+                    <DuplicateModal />
+                </RightSidebar>
             </ContentContainer>
             <Footer>
                 <Button

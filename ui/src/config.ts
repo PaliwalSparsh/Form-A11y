@@ -1,6 +1,6 @@
 const config = {
     color: {
-        blue: '#1473E6',
+        blue: { medium: '#1473E6', dark: '#042B3E' },
         orange: '#F87A1B',
         white: '#FBFBFB',
         black: '#2F2F2F',
