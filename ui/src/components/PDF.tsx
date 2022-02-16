@@ -41,6 +41,7 @@ class PDFPageRenderer {
 
     render(scale: number) {
         const viewport = this.page.getViewport({ scale });
+        console.log(viewport, scale);
 
         this.canvas.height = viewport.height;
         this.canvas.width = viewport.width;
