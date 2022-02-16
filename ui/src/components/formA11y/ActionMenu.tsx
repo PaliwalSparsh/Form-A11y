@@ -1,6 +1,7 @@
 // @ts-nocheck
 import styled from 'styled-components';
 import { DownOutlined } from '@ant-design/icons';
+import config from '../../config';
 
 // const MENU_WIDTH = 150;
 // const MENU_HEIGHT = 40;
@@ -41,7 +42,7 @@ const Menu = styled.div`
     width: auto;
     height: 100%;
     background: white;
-    // box-shadow:;
+    box-shadow: ${config.color.gray.light} 0px 7px 29px 0px;
     border-radius: 0.5rem;
     display: flex;
     align-items: center;
@@ -58,7 +59,7 @@ const MenuItem = styled.span`
     font-size: 0.875rem;
     font-family: 'Roboto', sans-serif;
     font-weight: 700;
-    border-right: 1px solid black;
+    border-right: 1px solid ${config.color.gray.line};
     img {
         width: 100%;
         height: 100%;
@@ -70,7 +71,7 @@ const MenuItem = styled.span`
     }
 
     &:hover {
-        background: $tertiary;
+        background: ${config.color.gray.line};
         cursor: pointer;
     }
 
