@@ -103,6 +103,7 @@ interface SelectionTokenProps {
     pageInfo: PDFPageInfo;
     tokens: TokenId[] | null;
 }
+
 export const SelectionTokens = ({ pageInfo, tokens }: SelectionTokenProps) => {
     return (
         <>
