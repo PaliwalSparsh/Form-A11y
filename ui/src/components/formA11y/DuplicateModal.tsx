@@ -20,6 +20,7 @@ export const DuplicateModal = () => {
             </Button>
             <AntUIModal
                 visible={visible}
+                width={400}
                 title="Duplicate Fields"
                 onOk={() => {}}
                 okText="Apply"
@@ -67,7 +68,8 @@ const Field = styled.div`
 
 const Label = styled.div`
     margin-right: 16px;
-    width: 15%;
+    width: 16%;
+    font-weight: bold;
 `;
 
 const PreviewContainer = styled.div`

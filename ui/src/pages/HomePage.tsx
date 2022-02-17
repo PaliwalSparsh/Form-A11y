@@ -323,11 +323,15 @@ const LeftSidebar = styled.div`
     width: 13%;
 `;
 
+// This is just a basic implementation needs a lot of fixes.
 const FormContainer = styled.div`
-    width: 800px;
+    width: 1200px;
+    overflow: hidden;
+    height: 650px;
 `;
 
 const RightSidebar = styled.div`
+    align-self: flex-start;
     width: 13%;
 `;
 
