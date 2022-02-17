@@ -49,6 +49,7 @@ export class RelationGroup {
     }
 }
 
+// class for each annotation piece.
 export class Annotation {
     public readonly id: string;
 
@@ -85,6 +86,7 @@ export class Annotation {
     }
 }
 
+// all annotations present in the document.
 export class PdfAnnotations {
     constructor(
         public readonly annotations: Annotation[],

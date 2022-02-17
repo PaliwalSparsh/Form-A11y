@@ -23,6 +23,7 @@ export const RelationModal = ({
 }: RelationModalProps) => {
     const annotationStore = useContext(AnnotationStore);
     const [targetKeys, setTargetKeys] = useState<string[]>([]);
+    // source is selected annotation
     const transferSource = source.map((a) => ({ key: a.id, annotation: a }));
 
     return (

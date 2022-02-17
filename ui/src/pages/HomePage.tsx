@@ -120,7 +120,7 @@ export const HomePage = () => {
             });
     }, [sha]);
 
-    // get annotations for the current document
+    // get pdf file and its token
     useEffect(() => {
         setDocument(undefined);
         setViewState(ViewState.LOADING);
@@ -137,6 +137,7 @@ export const HomePage = () => {
             getTokens(sha),
         ])
             .then(([doc, resp]) => {
+                // this is full document contains all pages.
                 setDocument(doc);
 
                 // Load all the pages too. In theory this makes things a little slower to startup,
@@ -147,6 +148,7 @@ export const HomePage = () => {
                 for (let i = 1; i <= doc.numPages; i++) {
                     // See line 50 for an explanation of the cast here.
                     loadPages.push(
+                        // getPage is an async process, thus Promise.all is used.
                         doc.getPage(i).then((p) => {
                             const pageIndex = p.pageNumber - 1;
                             const pageTokens = resp[pageIndex].tokens;
@@ -154,6 +156,7 @@ export const HomePage = () => {
                         })
                     );
                 }
+                // loadPages is an array of PDFPageInfo objects. This object contains page data and its tokens.
                 return Promise.all(loadPages);
             })
             .then((pages) => {
@@ -240,6 +243,7 @@ export const HomePage = () => {
                             <listeners.SaveWithTimeout sha={sha} />
                             <listeners.SaveBeforeUnload sha={sha} />
                             <listeners.HideAnnotationLabels />
+                            {/* This is the place where we can add shortcuts for anything as listeners. */}
                             <HomeContainer>
                                 {activeRelationLabel ? (
                                     <RelationModal
