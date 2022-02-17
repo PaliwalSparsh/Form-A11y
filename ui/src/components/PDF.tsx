@@ -41,7 +41,6 @@ class PDFPageRenderer {
 
     render(scale: number) {
         const viewport = this.page.getViewport({ scale });
-        console.log('🚀 ~ file: PDF.tsx ~ line 44 ~ PDFPageRenderer ~ render ~ viewport', viewport);
 
         this.canvas.height = viewport.height;
         this.canvas.width = viewport.width;
