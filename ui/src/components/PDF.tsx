@@ -41,12 +41,12 @@ class PDFPageRenderer {
 
     render(scale: number) {
         const viewport = this.page.getViewport({ scale });
-        console.log('🚀 ~ file: PDF.tsx ~ line 45 ~ PDFPageRenderer ~ render ~ viewport', viewport);
-        console.log('🚀 ~ file: PDF.tsx ~ line 45 ~ PDFPageRenderer ~ render ~ viewport', viewport);
+        console.log('🚀 ~ file: PDF.tsx ~ line 44 ~ PDFPageRenderer ~ render ~ viewport', viewport);
 
         this.canvas.height = viewport.height;
         this.canvas.width = viewport.width;
 
+        // get canvas for making changes to it.
         const canvasContext = this.canvas.getContext('2d');
         if (canvasContext === null) {
             throw new Error('No canvas context');
@@ -107,6 +107,7 @@ const Page = ({ pageInfo, onError }: PageProps) => {
 
     useEffect(() => {
         try {
+            // check if a page is in view might be used for performance and not rendering everything at once.
             const determinePageVisiblity = () => {
                 if (canvasRef.current !== null) {
                     const windowTop = 0;
@@ -127,9 +128,11 @@ const Page = ({ pageInfo, onError }: PageProps) => {
                 onError(new Error('No canvas element'));
                 return;
             }
-
+            // this gets bound for parent element not page. In the original codebase the parent was the page.
             pageInfo.bounds = getPageBoundsFromCanvas(canvasRef.current);
+
             const renderer = new PDFPageRenderer(pageInfo.page, canvasRef.current, onError);
+            // the reasoning behind scale is present in the PDFStore.tsx file.
             renderer.render(pageInfo.scale);
 
             determinePageVisiblity();
@@ -139,6 +142,7 @@ const Page = ({ pageInfo, onError }: PageProps) => {
                     onError(new Error('No canvas element'));
                     return;
                 }
+                // it gives x, y, width, height of the DOM element bounds.
                 pageInfo.bounds = getPageBoundsFromCanvas(canvasRef.current);
                 renderer.rescaleAndRender(pageInfo.scale);
                 setScale(pageInfo.scale);
@@ -215,6 +219,7 @@ const Page = ({ pageInfo, onError }: PageProps) => {
             {
                 // We only render the tokens if the page is visible, as rendering them all makes the
                 // page slow and/or crash.
+                // This is where annotations are rendered.
                 scale &&
                     isVisible &&
                     annotations.map((annotation) => (

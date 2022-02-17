@@ -324,7 +324,7 @@ const LeftSidebar = styled.div`
 `;
 
 const FormContainer = styled.div`
-    width: 80%;
+    width: 800px;
 `;
 
 const RightSidebar = styled.div`

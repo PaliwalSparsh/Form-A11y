@@ -194,9 +194,12 @@ export class PDFPageInfo {
         if (this.bounds === undefined) {
             throw new Error('Unknown Page Bounds');
         }
+        // An array of the visible portion of the PDF page in user space units [x1, y1, x2, y2].
         const pdfPageWidth = this.page.view[2] - this.page.view[1];
         const domPageWidth = this.bounds.right - this.bounds.left;
-        return (domPageWidth / pdfPageWidth) * 0.3;
+
+        // My DOMPage had X size and pdfPage has Y size. I want my pdfPage to fit completely in my DOMPage. So scale it fully.
+        return domPageWidth / pdfPageWidth;
     }
 }
 

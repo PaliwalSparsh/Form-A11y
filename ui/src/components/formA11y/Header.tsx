@@ -48,10 +48,8 @@ const LogoContainer = styled.div`
 `;
 
 const StepsContainer = styled.div`
+    padding-left: 30%;
     width: 90%;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
 `;
 
 const Container = styled.header`
