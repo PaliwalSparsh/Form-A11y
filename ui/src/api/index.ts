@@ -87,6 +87,7 @@ export function saveAnnotations(sha: string, pdfAnnotations: PdfAnnotations): Pr
 export async function getAnnotations(sha: string): Promise<PdfAnnotations> {
     return axios.get(`/api/doc/${sha}/annotations`).then((response) => {
         const ann: PdfAnnotations = response.data;
+        // fromObject returns a new Annotation object for each of the incoming value.
         const annotations = ann.annotations.map((a) => Annotation.fromObject(a));
         const relations = ann.relations.map((r) => RelationGroup.fromObject(r));
 

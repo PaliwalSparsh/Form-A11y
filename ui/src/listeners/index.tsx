@@ -3,6 +3,7 @@ import { AnnotationStore } from '../context';
 import { saveAnnotations } from '../api';
 import { notification } from '@allenai/varnish';
 
+// uses context passed to perform the action
 export const UndoAnnotation = () => {
     const annotationStore = useContext(AnnotationStore);
     const { pdfAnnotations, setPdfAnnotations } = annotationStore;
@@ -48,6 +49,8 @@ export const HideAnnotationLabels = () => {
 interface HandleAnnotationSelectionProps {
     setModalVisible: (v: boolean) => void;
 }
+
+// Shows relation modal when something is selected using shift and has relations.
 export const HandleAnnotationSelection = ({ setModalVisible }: HandleAnnotationSelectionProps) => {
     const annotationStore = useContext(AnnotationStore);
     const { selectedAnnotations, setSelectedAnnotations, activeRelationLabel } = annotationStore;
@@ -82,6 +85,7 @@ interface WithSha {
     sha: string;
 }
 
+// Runs every 2 seconds to save annotations.
 export const SaveWithTimeout = ({ sha }: WithSha) => {
     const annotationStore = useContext(AnnotationStore);
     const { pdfAnnotations, setPdfAnnotations } = annotationStore;
@@ -92,6 +96,7 @@ export const SaveWithTimeout = ({ sha }: WithSha) => {
         // annotations and relations are empty.
         if (pdfAnnotations.unsavedChanges) {
             const currentTimeout = setTimeout(() => {
+                // this is api call to save annotations on backend.
                 saveAnnotations(sha, pdfAnnotations)
                     .then(() => {
                         setPdfAnnotations(pdfAnnotations.saved());
