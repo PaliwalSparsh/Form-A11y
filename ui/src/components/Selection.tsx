@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import React, { MouseEvent, useContext, useState, useEffect } from 'react';
 import styled, { ThemeContext } from 'styled-components';
 import { Modal, Select } from '@allenai/varnish';
@@ -59,15 +61,14 @@ export const SelectionBoundary = ({
                 // is pressed in order to allow users to select multiple
                 // annotations and associate them together with a relation.
                 if (e.shiftKey && onClick) {
-                    e.stopPropagation();
                     onClick();
                 }
+                e.stopPropagation();
             }}
             onMouseDown={(e) => {
-                if (e.shiftKey && onClick) {
-                    e.stopPropagation();
-                }
+                e.stopPropagation();
             }}
+            // this place holds logic for the appearance of selected element.
             style={{
                 position: 'absolute',
                 left: `${bounds.left}px`,
@@ -241,6 +242,7 @@ export const Selection = ({ pageInfo, annotation, showInfo = true }: SelectionPr
     };
 
     const onShiftClick = () => {
+        // slice(0) is used to create identical copy of an array.
         const current = annotationStore.selectedAnnotations.slice(0);
 
         // Current contains this annotation, so we remove it.
