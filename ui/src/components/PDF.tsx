@@ -209,6 +209,11 @@ const Page = ({ pageInfo, onError }: PageProps) => {
                                           newAnnotation
                                       )
                                   );
+                                  // newly created annotation is selected.
+                                  annotationStore.setSelectedAnnotations([newAnnotation]);
+                              } else {
+                                  // if no new annotation is created, then we need to clear the selection.
+                                  annotationStore.setSelectedAnnotations([]);
                               }
                           }
                           // After the annotation is created, we reset the selection.
