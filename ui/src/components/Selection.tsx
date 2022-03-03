@@ -232,7 +232,7 @@ export const Selection = ({ pageInfo, annotation, showInfo = true }: SelectionPr
     }
 
     const bounds = pageInfo.getScaledBounds(annotation.bounds);
-    const border = getBorderWidthFromBounds(bounds);
+    // const border = getBorderWidthFromBounds(bounds);
 
     const removeAnnotation = () => {
         annotationStore.setPdfAnnotations(
@@ -262,35 +262,40 @@ export const Selection = ({ pageInfo, annotation, showInfo = true }: SelectionPr
     };
 
     const selected = annotationStore.selectedAnnotations.includes(annotation);
+    const showInfoAndLabels = showInfo && !annotationStore.hideLabels;
 
     return (
         <>
             <SelectionBoundary color={color} bounds={bounds} onClick={onClick} selected={selected}>
-                {showInfo && !annotationStore.hideLabels ? (
-                    <SelectionInfo border={border} color={color}>
-                        <span>{label.text}</span>
-                        <EditFilled
-                            onClick={(e) => {
-                                e.stopPropagation();
-                                setIsEditLabelModalVisible(true);
-                            }}
-                            onMouseDown={(e) => {
-                                e.stopPropagation();
-                            }}
-                        />
-                        <CloseCircleFilled
-                            onClick={(e) => {
-                                e.stopPropagation();
-                                removeAnnotation();
-                            }}
-                            // We have to prevent the default behaviour for
-                            // the pdf canvas here, in order to be able to capture
-                            // the click event.
-                            onMouseDown={(e) => {
-                                e.stopPropagation();
-                            }}
-                        />
-                    </SelectionInfo>
+                {showInfoAndLabels ? (
+                    <>
+                        <SelectionInformation>
+                            <Label color={color}>{label.text.slice(0, 1)}</Label>
+                            <Controls color={color}>
+                                <EditFilled
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        setIsEditLabelModalVisible(true);
+                                    }}
+                                    onMouseDown={(e) => {
+                                        e.stopPropagation();
+                                    }}
+                                />
+                                <CloseCircleFilled
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        removeAnnotation();
+                                    }}
+                                    // We have to prevent the default behaviour for
+                                    // the pdf canvas here, in order to be able to capture
+                                    // the click event.
+                                    onMouseDown={(e) => {
+                                        e.stopPropagation();
+                                    }}
+                                />
+                            </Controls>
+                        </SelectionInformation>
+                    </>
                 ) : null}
             </SelectionBoundary>
             {
@@ -316,24 +321,46 @@ export const Selection = ({ pageInfo, annotation, showInfo = true }: SelectionPr
 // We use transform here because we need to translate the label upward
 // to sit on top of the bounds as a function of *its own* height,
 // not the height of it's parent.
-interface SelectionInfoProps {
-    border: number;
-    color: string;
-}
-const SelectionInfo = styled.div<SelectionInfoProps>(
-    ({ border, color }) => `
-        position: absolute;
-        right: -${border}px;
-        transform:translateY(-100%);
-        border: ${border} solid  ${color};
-        background: ${color};
-        font-weight: bold;
-        font-size: 12px;
-        user-select: none;
 
-        * {
-            margin: 2px;
-            vertical-align: middle;
-        }
-    `
+// interface SelectionInfoProps {
+//     border: number;
+//     color: string;
+// }
+// const SelectionInfo = styled.div<SelectionInfoProps>(
+//     ({ border, color }) => `
+//         position: absolute;
+//         right: -${border}px;
+//         transform:translateY(-100%);
+//         border: ${border} solid  ${color};
+//         background: ${color};
+//         font-weight: bold;
+//         font-size: 12px;
+//         user-select: none;
+
+//         * {
+//             margin: 2px;
+//             vertical-align: middle;
+//         }
+//     `
+// );
+
+const SelectionInformation = styled.div`
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    align-items: center;
+`;
+
+const Label = styled.div(
+    ({ color }) => `
+    font-weight: bold;
+    color: ${color};
+`
+);
+
+const Controls = styled.div(
+    ({ color }) => `
+    font-weight: bold;
+    color: ${color};
+`
 );
