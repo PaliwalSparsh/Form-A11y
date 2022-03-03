@@ -194,6 +194,7 @@ const Page = ({ pageInfo, onError }: PageProps) => {
             onMouseUp={
                 selection
                     ? () => {
+                          // activeLabel can be set to Textbox, checkbox, radio, etc. in the sidebar. Then it is used when new annotations are created.
                           if (annotationStore.activeLabel) {
                               const newAnnotation = getNewAnnotation(
                                   // TODO(Mark): Change
@@ -210,6 +211,7 @@ const Page = ({ pageInfo, onError }: PageProps) => {
                                   );
                               }
                           }
+                          // After the annotation is created, we reset the selection.
                           setSelection(undefined);
                       }
                     : undefined
@@ -256,6 +258,7 @@ const Page = ({ pageInfo, onError }: PageProps) => {
                       }
                   })()
                 : null}
+            {/* TODO(Sparsh): This is where all form annotations will be rendered.} */}
         </PageAnnotationsContainer>
     );
 };
