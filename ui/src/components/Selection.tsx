@@ -60,9 +60,8 @@ export const SelectionBoundary = ({
                 // behaviour of drawing a new bounding box if the shift key
                 // is pressed in order to allow users to select multiple
                 // annotations and associate them together with a relation.
-                if (e.shiftKey && onClick) {
-                    onClick();
-                }
+                // We passed event to the onClick handler where this component is used.
+                onClick(e);
                 e.stopPropagation();
             }}
             onMouseDown={(e) => {
@@ -241,18 +240,24 @@ export const Selection = ({ pageInfo, annotation, showInfo = true }: SelectionPr
         );
     };
 
-    const onShiftClick = () => {
-        // slice(0) is used to create identical copy of an array.
-        const current = annotationStore.selectedAnnotations.slice(0);
+    const onClick = (e) => {
+        // if shift is used do as pawls did earlier.
+        if (e.shiftKey) {
+            // slice(0) is used to create identical copy of an array.
+            const current = annotationStore.selectedAnnotations.slice(0);
 
-        // Current contains this annotation, so we remove it.
-        if (current.some((other) => other.id === annotation.id)) {
-            const next = current.filter((other) => other.id !== annotation.id);
-            annotationStore.setSelectedAnnotations(next);
-            // Otherwise we add it.
+            // Current contains this annotation, so we remove it.
+            if (current.some((other) => other.id === annotation.id)) {
+                const next = current.filter((other) => other.id !== annotation.id);
+                annotationStore.setSelectedAnnotations(next);
+                // Otherwise we add it.
+            } else {
+                current.push(annotation);
+                annotationStore.setSelectedAnnotations(current);
+            }
         } else {
-            current.push(annotation);
-            annotationStore.setSelectedAnnotations(current);
+            // if shift is not used, we just add the currently selected annotation.
+            annotationStore.setSelectedAnnotations([annotation]);
         }
     };
 
@@ -260,11 +265,7 @@ export const Selection = ({ pageInfo, annotation, showInfo = true }: SelectionPr
 
     return (
         <>
-            <SelectionBoundary
-                color={color}
-                bounds={bounds}
-                onClick={onShiftClick}
-                selected={selected}>
+            <SelectionBoundary color={color} bounds={bounds} onClick={onClick} selected={selected}>
                 {showInfo && !annotationStore.hideLabels ? (
                     <SelectionInfo border={border} color={color}>
                         <span>{label.text}</span>

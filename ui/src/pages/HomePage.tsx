@@ -238,7 +238,7 @@ export const HomePage = () => {
                                 setHideLabels,
                             }}>
                             <listeners.UndoAnnotation />
-                            {/* Removed this so now Shift click for relation won't work.
+                            {/* Updated such that relation modal no longer exist.
                             <listeners.HandleAnnotationSelection
                                 setModalVisible={setRelationModalVisible}
                             /> */}
