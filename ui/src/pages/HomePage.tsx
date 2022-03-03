@@ -59,7 +59,7 @@ export const HomePage = () => {
     const [relationLabels, setRelationLabels] = useState([]);
     const [activeRelationLabel, setActiveRelationLabel] = useState();
     // this is turned off by default in pawls.
-    const [freeFormAnnotations, toggleFreeFormAnnotations] = useState(false);
+    const [freeFormAnnotations, toggleFreeFormAnnotations] = useState(true);
     const [hideLabels, setHideLabels] = useState(false);
 
     const [relationModalVisible, setRelationModalVisible] = useState(false);
