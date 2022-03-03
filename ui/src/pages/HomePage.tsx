@@ -58,6 +58,7 @@ export const HomePage = () => {
     const [labels, setLabels] = useState([]);
     const [relationLabels, setRelationLabels] = useState([]);
     const [activeRelationLabel, setActiveRelationLabel] = useState();
+    // this is turned off by default in pawls.
     const [freeFormAnnotations, toggleFreeFormAnnotations] = useState(false);
     const [hideLabels, setHideLabels] = useState(false);
 
@@ -237,9 +238,11 @@ export const HomePage = () => {
                                 setHideLabels,
                             }}>
                             <listeners.UndoAnnotation />
+                            {/* Removed this so now Shift click for relation won't work.
                             <listeners.HandleAnnotationSelection
                                 setModalVisible={setRelationModalVisible}
-                            />
+                            /> */}
+                            <listeners.HandleAnnotationSelection />
                             <listeners.SaveWithTimeout sha={sha} />
                             <listeners.SaveBeforeUnload sha={sha} />
                             <listeners.HideAnnotationLabels />

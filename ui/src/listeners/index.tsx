@@ -46,12 +46,12 @@ export const HideAnnotationLabels = () => {
     return null;
 };
 
-interface HandleAnnotationSelectionProps {
-    setModalVisible: (v: boolean) => void;
-}
+// interface HandleAnnotationSelectionProps {
+//     setModalVisible: (v: boolean) => void;
+// }
 
 // Shows relation modal when something is selected using shift and has relations.
-export const HandleAnnotationSelection = ({ setModalVisible }: HandleAnnotationSelectionProps) => {
+export const HandleAnnotationSelection = () => {
     const annotationStore = useContext(AnnotationStore);
     const { selectedAnnotations, setSelectedAnnotations, activeRelationLabel } = annotationStore;
     useEffect(() => {
@@ -62,7 +62,7 @@ export const HandleAnnotationSelection = ({ setModalVisible }: HandleAnnotationS
             // Shift key up, the user has selected something,
             // and this annotation project has relation labels.
             if (shift && somethingSelected && hasRelations) {
-                setModalVisible(true);
+                // setModalVisible(true);
             }
             // Otherwise we just clear the selection,
             // if there is something selected, because
@@ -76,7 +76,8 @@ export const HandleAnnotationSelection = ({ setModalVisible }: HandleAnnotationS
         return () => {
             window.removeEventListener('keyup', onShiftUp);
         };
-    }, [activeRelationLabel, selectedAnnotations, setModalVisible]);
+    }, [activeRelationLabel, selectedAnnotations]);
+    // }, [activeRelationLabel, selectedAnnotations, setModalVisible]);
 
     return null;
 };

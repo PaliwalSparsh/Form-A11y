@@ -261,9 +261,9 @@ export const PDFPage = () => {
                                 setHideLabels,
                             }}>
                             <listeners.UndoAnnotation />
-                            <listeners.HandleAnnotationSelection
+                            {/* <listeners.HandleAnnotationSelection
                                 setModalVisible={setRelationModalVisible}
-                            />
+                            /> */}
                             <listeners.SaveWithTimeout sha={sha} />
                             <listeners.SaveBeforeUnload sha={sha} />
                             <listeners.HideAnnotationLabels />
