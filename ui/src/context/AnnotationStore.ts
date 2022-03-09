@@ -99,7 +99,7 @@ export class PdfAnnotations {
     }
 
     withNewAnnotation(a: Annotation): PdfAnnotations {
-        console.log('Logging newly created annotation:', this.annotations);
+        console.log('Logging newly created annotation:', a);
         return new PdfAnnotations(this.annotations.concat([a]), this.relations, true);
     }
 
