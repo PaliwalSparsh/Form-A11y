@@ -18,7 +18,7 @@ export const ActionMenu = ({ children }) => {
     );
 };
 
-ActionMenu.FieldLayer = () => {
+ActionMenu.FieldLayer = ({ handleDelete }) => {
     return (
         <ActionMenu>
             <MenuItem>
@@ -26,12 +26,25 @@ ActionMenu.FieldLayer = () => {
                 <DownOutlined />
             </MenuItem>
             <MenuItem>Duplicate</MenuItem>
-            <MenuItem>Delete</MenuItem>
+            <MenuItem
+                onClick={(e) => {
+                    e.stopPropagation();
+                    handleDelete();
+                }}
+                // We have to prevent the default behaviour for
+                // the pdf canvas here, in order to be able to capture
+                // the click event.
+                onMouseDown={(e) => {
+                    e.stopPropagation();
+                }}>
+                Delete
+            </MenuItem>
         </ActionMenu>
     );
 };
 
 const MenuContainer = styled.div`
+    transform: translateY(-130%);
     position: absolute;
     width: auto;
     height: 2.5rem;
