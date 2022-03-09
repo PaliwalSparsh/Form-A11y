@@ -11,6 +11,10 @@ const config = {
             dark: '#595959',
         },
     },
+    bound: {
+        minWidth: 5,
+        minHeight: 5,
+    },
 };
 
 export default config;

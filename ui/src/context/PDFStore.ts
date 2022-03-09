@@ -3,6 +3,7 @@ import { PDFPageProxy, PDFDocumentProxy } from 'pdfjs-dist/types/display/api';
 
 import { Token, Label } from '../api';
 import { TokenId, Annotation } from './AnnotationStore';
+import config from '../config';
 
 export type Optional<T> = T | undefined;
 
@@ -51,6 +52,11 @@ function spanningBound(bounds: Bounds[], padding: number = 3): Bounds {
     maxBound.bottom = maxBound.bottom + padding;
 
     return maxBound;
+}
+
+function isBoundDimensionSmall(bound: Bounds): boolean {
+    const { minWidth, minHeight } = config.bound;
+    return bound.right - bound.left < minWidth || bound.bottom - bound.top < minHeight;
 }
 
 /**
@@ -116,7 +122,7 @@ export class PDFPageInfo {
         public bounds?: Bounds
     ) {}
 
-    getFreeFormAnnotationForBounds(selection: Bounds, label: Label): Annotation {
+    getFreeFormAnnotationForBounds(selection: Bounds, label: Label): any {
         if (this.bounds === undefined) {
             throw new Error('Unknown Page Bounds');
         }
@@ -126,7 +132,13 @@ export class PDFPageInfo {
         // the annotation, we want to remove this, because storing it with respect
         // to the PDF page's original scale means we can render it everywhere.
         const bounds = scaled(selection, 1 / this.scale);
-
+        // this check ensures that an annotation is created only if it has significant
+        // dimensions.Earlier freeform annotation with 0 width and 0 height was created
+        // even when user clicked the screen. This is not needed in case of getAnnotationForBounds
+        // because it creates annotation only if a token is present in the bound.
+        if (isBoundDimensionSmall(bounds)) {
+            return;
+        }
         return new Annotation(bounds, this.page.pageNumber - 1, label);
     }
 
