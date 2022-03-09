@@ -5,7 +5,8 @@ import styled, { ThemeContext } from 'styled-components';
 import { Modal, Select } from '@allenai/varnish';
 
 import { Bounds, TokenId, PDFPageInfo, Annotation, AnnotationStore } from '../context';
-import { CloseCircleFilled, EditFilled } from '@ant-design/icons';
+import { EditFilled } from '@ant-design/icons';
+import { ActionMenu } from './formA11y';
 
 function hexToRgb(hex: string) {
     const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
@@ -259,6 +260,7 @@ export const Selection = ({ pageInfo, annotation, showInfo = true }: SelectionPr
             // if shift is not used, we just add the currently selected annotation.
             annotationStore.setSelectedAnnotations([annotation]);
         }
+        console.log('selectedAnnotation', annotationStore.selectedAnnotations);
     };
 
     const selected = annotationStore.selectedAnnotations.includes(annotation);
@@ -269,6 +271,7 @@ export const Selection = ({ pageInfo, annotation, showInfo = true }: SelectionPr
             <SelectionBoundary color={color} bounds={bounds} onClick={onClick} selected={selected}>
                 {showInfoAndLabels ? (
                     <>
+                        {selected && <ActionMenu.FieldLayer handleDelete={removeAnnotation} />}
                         <SelectionInformation>
                             <Label color={color}>{label.text.slice(0, 1)}</Label>
                             <Controls color={color}>
@@ -277,18 +280,6 @@ export const Selection = ({ pageInfo, annotation, showInfo = true }: SelectionPr
                                         e.stopPropagation();
                                         setIsEditLabelModalVisible(true);
                                     }}
-                                    onMouseDown={(e) => {
-                                        e.stopPropagation();
-                                    }}
-                                />
-                                <CloseCircleFilled
-                                    onClick={(e) => {
-                                        e.stopPropagation();
-                                        removeAnnotation();
-                                    }}
-                                    // We have to prevent the default behaviour for
-                                    // the pdf canvas here, in order to be able to capture
-                                    // the click event.
                                     onMouseDown={(e) => {
                                         e.stopPropagation();
                                     }}

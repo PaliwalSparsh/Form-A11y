@@ -98,6 +98,7 @@ const Page = ({ pageInfo, onError }: PageProps) => {
     const annotationStore = useContext(AnnotationStore);
 
     const containerRef = useRef<HTMLDivElement>(null);
+    // this selection is not the selectedAnnotations. This is the selection box that is drawn on the page.
     const [selection, setSelection] = useState<Bounds>();
 
     const annotations = annotationStore.pdfAnnotations.annotations.filter(
