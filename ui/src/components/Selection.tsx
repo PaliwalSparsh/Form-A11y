@@ -235,10 +235,17 @@ export const Selection = ({ pageInfo, annotation, showInfo = true }: SelectionPr
     const bounds = pageInfo.getScaledBounds(annotation.bounds);
     // const border = getBorderWidthFromBounds(bounds);
 
-    const removeAnnotation = () => {
-        annotationStore.setPdfAnnotations(
-            annotationStore.pdfAnnotations.deleteAnnotation(annotation)
-        );
+    const removeAnnotations = () => {
+        // This deletes all selected annotations. If only one annotation is selected it gets deleted.
+        const allSelectedAnnotations = annotationStore.selectedAnnotations;
+        let updatedAnnotation = annotationStore.pdfAnnotations;
+        allSelectedAnnotations.forEach((selectedAnnotation) => {
+            updatedAnnotation = updatedAnnotation.deleteAnnotation(selectedAnnotation);
+        });
+        // We do not call setState in a loop as react enqueues changes to the component
+        // state. Calling setState in a loop gives you stale data.
+        annotationStore.setPdfAnnotations(updatedAnnotation);
+        annotationStore.setSelectedAnnotations([]);
     };
 
     const onClick = (e) => {
@@ -260,18 +267,28 @@ export const Selection = ({ pageInfo, annotation, showInfo = true }: SelectionPr
             // if shift is not used, we just add the currently selected annotation.
             annotationStore.setSelectedAnnotations([annotation]);
         }
-        console.log('selectedAnnotation', annotationStore.selectedAnnotations);
     };
 
-    const selected = annotationStore.selectedAnnotations.includes(annotation);
+    // Show selection for only the first selected annotation when multiple are selected.
+    const isSelected = annotationStore.selectedAnnotations.includes(annotation);
+    const totalSelections = annotationStore.selectedAnnotations.length;
+    const firstSelection = annotationStore.selectedAnnotations[totalSelections - 1];
+    const isFirstSelection = firstSelection && firstSelection.id === annotation.id;
+
     const showInfoAndLabels = showInfo && !annotationStore.hideLabels;
 
     return (
         <>
-            <SelectionBoundary color={color} bounds={bounds} onClick={onClick} selected={selected}>
+            <SelectionBoundary
+                color={color}
+                bounds={bounds}
+                onClick={onClick}
+                selected={isSelected}>
                 {showInfoAndLabels ? (
                     <>
-                        {selected && <ActionMenu.FieldLayer handleDelete={removeAnnotation} />}
+                        {isFirstSelection && (
+                            <ActionMenu.FieldLayer handleDelete={removeAnnotations} />
+                        )}
                         <SelectionInformation>
                             <Label color={color}>{label.text.slice(0, 1)}</Label>
                             <Controls color={color}>
