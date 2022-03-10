@@ -330,6 +330,7 @@ const FormContainer = styled.div`
     width: 1200px;
     overflow: hidden;
     height: 650px;
+    user-select: none;
 `;
 
 const RightSidebar = styled.div`
