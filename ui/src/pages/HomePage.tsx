@@ -25,8 +25,10 @@ import {
     // Annotation,
     AnnotationStore,
     PDFStore,
+    ToolStore,
     RelationGroup,
     PdfAnnotations,
+    toolType,
 } from '../context';
 
 import * as listeners from '../listeners';
@@ -44,6 +46,7 @@ pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/$
 export const HomePage = () => {
     const { sha } = useParams();
     const [viewState, setViewState] = useState(ViewState.LOADING);
+    const [currentTool, setCurrentTool] = useState(toolType.ARROW);
 
     const [doc, setDocument] = useState();
     const [progress, setProgress] = useState(0);
@@ -59,7 +62,7 @@ export const HomePage = () => {
     const [relationLabels, setRelationLabels] = useState([]);
     const [activeRelationLabel, setActiveRelationLabel] = useState();
     // this is turned off by default in pawls.
-    const [freeFormAnnotations, toggleFreeFormAnnotations] = useState(true);
+    const [freeFormAnnotations, toggleFreeFormAnnotations] = useState(false);
     const [hideLabels, setHideLabels] = useState(false);
 
     const [relationModalVisible, setRelationModalVisible] = useState(false);
@@ -214,53 +217,55 @@ export const HomePage = () => {
         case ViewState.LOADED:
             if (doc && pages && pdfAnnotations) {
                 return (
-                    <PDFStore.Provider
-                        value={{
-                            doc,
-                            pages,
-                            onError,
-                        }}>
-                        <AnnotationStore.Provider
+                    <ToolStore.Provider value={{ currentTool, setCurrentTool }}>
+                        <PDFStore.Provider
                             value={{
-                                labels,
-                                activeLabel,
-                                setActiveLabel,
-                                relationLabels,
-                                activeRelationLabel,
-                                setActiveRelationLabel,
-                                pdfAnnotations,
-                                setPdfAnnotations,
-                                selectedAnnotations,
-                                setSelectedAnnotations,
-                                freeFormAnnotations,
-                                toggleFreeFormAnnotations,
-                                hideLabels,
-                                setHideLabels,
+                                doc,
+                                pages,
+                                onError,
                             }}>
-                            <listeners.UndoAnnotation />
-                            {/* Updated such that relation modal no longer exist.
+                            <AnnotationStore.Provider
+                                value={{
+                                    labels,
+                                    activeLabel,
+                                    setActiveLabel,
+                                    relationLabels,
+                                    activeRelationLabel,
+                                    setActiveRelationLabel,
+                                    pdfAnnotations,
+                                    setPdfAnnotations,
+                                    selectedAnnotations,
+                                    setSelectedAnnotations,
+                                    freeFormAnnotations,
+                                    toggleFreeFormAnnotations,
+                                    hideLabels,
+                                    setHideLabels,
+                                }}>
+                                <listeners.UndoAnnotation />
+                                {/* Updated such that relation modal no longer exist.
                             <listeners.HandleAnnotationSelection
                                 setModalVisible={setRelationModalVisible}
                             /> */}
-                            <listeners.HandleAnnotationSelection />
-                            <listeners.SaveWithTimeout sha={sha} />
-                            <listeners.SaveBeforeUnload sha={sha} />
-                            <listeners.HideAnnotationLabels />
-                            {/* This is the place where we can add shortcuts for anything as listeners. */}
-                            <HomeContainer>
-                                {activeRelationLabel ? (
-                                    <RelationModal
-                                        visible={relationModalVisible}
-                                        onClick={onRelationModalOk}
-                                        onCancel={onRelationModalCancel}
-                                        source={selectedAnnotations}
-                                        label={activeRelationLabel}
-                                    />
-                                ) : null}
-                                <PDF />
-                            </HomeContainer>
-                        </AnnotationStore.Provider>
-                    </PDFStore.Provider>
+                                <listeners.HandleAnnotationSelection />
+                                <listeners.SaveWithTimeout sha={sha} />
+                                <listeners.SaveBeforeUnload sha={sha} />
+                                <listeners.HideAnnotationLabels />
+                                {/* This is the place where we can add shortcuts for anything as listeners. */}
+                                <HomeContainer>
+                                    {activeRelationLabel ? (
+                                        <RelationModal
+                                            visible={relationModalVisible}
+                                            onClick={onRelationModalOk}
+                                            onCancel={onRelationModalCancel}
+                                            source={selectedAnnotations}
+                                            label={activeRelationLabel}
+                                        />
+                                    ) : null}
+                                    <PDF />
+                                </HomeContainer>
+                            </AnnotationStore.Provider>
+                        </PDFStore.Provider>
+                    </ToolStore.Provider>
                 );
             } else {
                 return null;
@@ -286,8 +291,7 @@ const HomeContainer = (props) => {
                 <LeftSidebar />
                 <FormContainer>{props.children}</FormContainer>
                 <RightSidebar>
-                    <IconButton type="cursor" />
-                    <IconButton type="field" />
+                    <ToolPanel />
                     <DuplicateModal />
                 </RightSidebar>
             </ContentContainer>
@@ -300,6 +304,25 @@ const HomeContainer = (props) => {
                 </Button>
             </Footer>
         </Container>
+    );
+};
+
+const ToolPanel = () => {
+    const { currentTool, setCurrentTool } = useContext(ToolStore);
+    console.log(currentTool);
+    return (
+        <>
+            {Object.keys(toolType).map((tool) => (
+                <IconButton
+                    key={toolType[tool]}
+                    isSelected={currentTool === toolType[tool]}
+                    onClick={() => {
+                        setCurrentTool(toolType[tool]);
+                    }}
+                    type={toolType[tool]}
+                />
+            ))}
+        </>
     );
 };
 
