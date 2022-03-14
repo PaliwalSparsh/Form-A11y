@@ -2,18 +2,20 @@
 import styled from 'styled-components';
 import { Button } from '@allenai/varnish';
 import config from '../../config';
+import { toolType } from '../../context';
 
-export const IconButton = ({ type, props }) => {
+export const IconButton = ({ type, ...props }) => {
     return (
         <AntUIButton type="primary" {...props}>
-            {type === 'field' && <img src="/fieldIcon.svg" />}
-            {type === 'cursor' && <img src="/cursorIcon.svg" />}
+            {type === toolType.SHAPE && <img src="/fieldIcon.svg" />}
+            {type === toolType.ARROW && <img src="/cursorIcon.svg" />}
         </AntUIButton>
     );
 };
 
 const AntUIButton = styled(Button)`
-    background-color: ${config.color.white};
+    background-color: ${(props) =>
+        props.isSelected ? config.color.blue.dark : config.color.white};
     border-color: ${config.color.white};
     width: 48px;
     height: 48px;
@@ -22,10 +24,15 @@ const AntUIButton = styled(Button)`
     justify-content: center;
     align-items: center;
     margin: 16px;
-    &:hover {
+    opacity: ${(props) => (props.isSelected ? '1' : '0.8')};
+    & {
         img {
-            filter: invert(1);
+            filter: ${(props) => (props.isSelected ? 'invert(1)' : 'invert(0)')};
         }
-        background-color: ${config.color.blue.dark};
+    }
+    &:hover {
+        opacity: 1;
+        background-color: ${config.color.white};
+        border-color: ${config.color.white};
     }
 `;

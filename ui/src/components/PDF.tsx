@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useContext, useRef, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { PDFPageProxy } from 'pdfjs-dist/types/display/api';
@@ -5,6 +6,8 @@ import { PDFPageProxy } from 'pdfjs-dist/types/display/api';
 import {
     PDFPageInfo,
     AnnotationStore,
+    ToolStore,
+    toolType,
     PDFStore,
     Bounds,
     normalizeBounds,
@@ -96,6 +99,7 @@ const Page = ({ pageInfo, onError }: PageProps) => {
     const [scale, setScale] = useState<number>(1);
 
     const annotationStore = useContext(AnnotationStore);
+    const toolStore = useContext(ToolStore);
 
     const containerRef = useRef<HTMLDivElement>(null);
     // this selection is not the selectedAnnotations. This is the selection box that is drawn on the page.
@@ -160,10 +164,9 @@ const Page = ({ pageInfo, onError }: PageProps) => {
         }
     }, [pageInfo, onError]); // We deliberately only run this once.
 
-    return (
-        <PageAnnotationsContainer
-            ref={containerRef}
-            onMouseDown={(event) => {
+    const toolProperties = {
+        [toolType.ARROW]: {
+            onMouseDown: (event) => {
                 if (containerRef.current === null) {
                     throw new Error('No Container');
                 }
@@ -177,51 +180,56 @@ const Page = ({ pageInfo, onError }: PageProps) => {
                         bottom: top,
                     });
                 }
-            }}
-            onMouseMove={
-                selection
-                    ? (event) => {
-                          if (containerRef.current === null) {
-                              throw new Error('No Container');
-                          }
-                          setSelection({
-                              ...selection,
-                              right: event.pageX - containerRef.current.offsetLeft,
-                              bottom: event.pageY - containerRef.current.offsetTop,
-                          });
-                      }
-                    : undefined
-            }
-            onMouseUp={
-                selection
-                    ? () => {
-                          // activeLabel can be set to Textbox, checkbox, radio, etc. in the sidebar. Then it is used when new annotations are created.
-                          if (annotationStore.activeLabel) {
-                              const newAnnotation = getNewAnnotation(
-                                  // TODO(Mark): Change
-                                  pageInfo,
-                                  selection,
-                                  annotationStore.activeLabel,
-                                  annotationStore.freeFormAnnotations
-                              );
-                              if (newAnnotation) {
-                                  annotationStore.setPdfAnnotations(
-                                      annotationStore.pdfAnnotations.withNewAnnotation(
-                                          newAnnotation
-                                      )
-                                  );
-                                  // newly created annotation is selected.
-                                  annotationStore.setSelectedAnnotations([newAnnotation]);
-                              } else {
-                                  // if no new annotation is created, then we need to clear the selection.
-                                  annotationStore.setSelectedAnnotations([]);
-                              }
-                          }
-                          // After the annotation is created, we reset the selection.
-                          setSelection(undefined);
-                      }
-                    : undefined
-            }>
+            },
+            onMouseMove: (event) => {
+                if (selection) {
+                    if (containerRef.current === null) {
+                        throw new Error('No Container');
+                    }
+                    setSelection({
+                        ...selection,
+                        right: event.pageX - containerRef.current.offsetLeft,
+                        bottom: event.pageY - containerRef.current.offsetTop,
+                    });
+                }
+            },
+            onMouseUp: () => {
+                if (selection) {
+                    // activeLabel can be set to Textbox, checkbox, radio, etc. in the sidebar. Then it is used when new annotations are created.
+                    if (annotationStore.activeLabel) {
+                        const newAnnotation = getNewAnnotation(
+                            // TODO(Mark): Change
+                            pageInfo,
+                            selection,
+                            annotationStore.activeLabel,
+                            annotationStore.freeFormAnnotations
+                        );
+                        if (newAnnotation) {
+                            annotationStore.setPdfAnnotations(
+                                annotationStore.pdfAnnotations.withNewAnnotation(newAnnotation)
+                            );
+                            // newly created annotation is selected.
+                            annotationStore.setSelectedAnnotations([newAnnotation]);
+                        } else {
+                            // if no new annotation is created, then we need to clear the selection.
+                            annotationStore.setSelectedAnnotations([]);
+                        }
+                    }
+                    // After the annotation is created, we reset the selection.
+                    setSelection(undefined);
+                }
+            },
+        },
+    };
+
+    const currentToolProperties = toolProperties[toolStore.currentTool];
+
+    return (
+        <PageAnnotationsContainer
+            ref={containerRef}
+            onMouseDown={currentToolProperties?.onMouseDown}
+            onMouseMove={currentToolProperties?.onMouseMove}
+            onMouseUp={currentToolProperties?.onMouseUp}>
             <PageCanvas ref={canvasRef} />
             {
                 // We only render the tokens if the page is visible, as rendering them all makes the
