@@ -1,6 +1,14 @@
 // @ts-nocheck
 import styled from 'styled-components';
 import Steps from './Steps';
+import Zoom from './Zoom';
+
+const ZoomContainer = styled.div`
+    display: flex;
+    width: 100%;
+    align-items: center;
+    flex-direction: column;
+`;
 
 export const Header = ({ currentLayer }) => {
     return (
@@ -11,6 +19,9 @@ export const Header = ({ currentLayer }) => {
             <StepsContainer>
                 <Steps current={currentLayer} stepInfo={stepInfo} />
             </StepsContainer>
+            <ZoomContainer>
+                <Zoom />
+            </ZoomContainer>
         </Container>
     );
 };
