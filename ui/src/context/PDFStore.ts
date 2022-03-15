@@ -219,10 +219,17 @@ interface _PDFStore {
     pages?: PDFPageInfo[];
     doc?: PDFDocumentProxy;
     onError: (err: Error) => void;
+    // Scale controls the extent into which we are zoomed into the PDF.
+    scale: number;
+    setScale: (newScale: number) => void;
 }
 
 export const PDFStore = createContext<_PDFStore>({
     onError: (_: Error) => {
         throw new Error('Unimplemented');
+    },
+    scale: 1,
+    setScale: () => {
+        throw new Error('Please use PDFStore inside of its provider.');
     },
 });

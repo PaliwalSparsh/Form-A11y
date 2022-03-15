@@ -94,6 +94,8 @@ const Page = ({ pageInfo, onError }: PageProps) => {
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const [isVisible, setIsVisible] = useState<boolean>(false);
     const [scale, setScale] = useState<number>(1);
+    const pdfContext = React.useContext(PDFStore);
+    const { scale: pdfScale } = pdfContext;
 
     const annotationStore = useContext(AnnotationStore);
 
@@ -133,7 +135,7 @@ const Page = ({ pageInfo, onError }: PageProps) => {
 
             const renderer = new PDFPageRenderer(pageInfo.page, canvasRef.current, onError);
             // the reasoning behind scale is present in the PDFStore.tsx file.
-            renderer.render(pageInfo.scale);
+            renderer.render(pdfScale * pageInfo.scale);
 
             determinePageVisiblity();
 

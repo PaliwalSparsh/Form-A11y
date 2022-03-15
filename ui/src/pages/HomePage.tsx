@@ -219,6 +219,8 @@ export const HomePage = () => {
                             doc,
                             pages,
                             onError,
+                            scale,
+                            setScale,
                         }}>
                         <AnnotationStore.Provider
                             value={{
