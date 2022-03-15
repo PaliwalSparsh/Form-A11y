@@ -135,7 +135,7 @@ const Page = ({ pageInfo, onError }: PageProps) => {
 
             const renderer = new PDFPageRenderer(pageInfo.page, canvasRef.current, onError);
             // the reasoning behind scale is present in the PDFStore.tsx file.
-            renderer.render(pdfScale * pageInfo.scale);
+            renderer.render((pdfScale / 100) * pageInfo.scale);
 
             determinePageVisiblity();
 
@@ -146,8 +146,8 @@ const Page = ({ pageInfo, onError }: PageProps) => {
                 }
                 // it gives x, y, width, height of the DOM element bounds.
                 pageInfo.bounds = getPageBoundsFromCanvas(canvasRef.current);
-                renderer.rescaleAndRender(pageInfo.scale);
-                setScale(pageInfo.scale);
+                renderer.rescaleAndRender((pdfScale / 100) * pageInfo.scale);
+                setScale((pdfScale / 100) * pageInfo.scale);
                 determinePageVisiblity();
             };
 
@@ -160,7 +160,7 @@ const Page = ({ pageInfo, onError }: PageProps) => {
         } catch (e) {
             onError(e);
         }
-    }, [pageInfo, onError]); // We deliberately only run this once.
+    }, [pageInfo, onError, pdfScale]); // We deliberately only run this when the scale changes.
 
     return (
         <PageAnnotationsContainer

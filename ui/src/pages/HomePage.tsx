@@ -64,6 +64,8 @@ export const HomePage = () => {
 
     const [relationModalVisible, setRelationModalVisible] = useState(false);
 
+    const [scale, setScale] = React.useState(100);
+
     const onError = useCallback(
         (err) => {
             console.error('Unexpected Error rendering PDF', err);

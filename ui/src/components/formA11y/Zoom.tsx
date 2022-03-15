@@ -1,10 +1,8 @@
 // @ts-nocheck
+import React from 'react';
 import styled from 'styled-components';
 import { Button, Select } from '@allenai/varnish';
-
-interface ZoomProps {
-    onChange: () => void;
-}
+import { PDFStore } from '../../context';
 
 const ButtonContainer = styled.div`
     display: flex;
@@ -31,21 +29,31 @@ const options = [
     { label: '100%', value: 100 },
 ];
 
-const Zoom: React.FC<ZoomProps> = (props) => {
-    const { onChange } = props;
-    console.log(onChange);
+const Zoom: React.FC = () => {
+    const { scale, setScale } = React.useContext(PDFStore);
     return (
         <ZoomContainer>
             <h5 style={{ margin: 0, marginBottom: '8px' }}>Zoom</h5>
             <ButtonContainer>
-                <Button>-</Button>
+                <Button
+                    onClick={() =>
+                        setScale((prevScale) => (prevScale <= 10 ? 10 : prevScale - 10))
+                    }>
+                    -
+                </Button>
                 <Select
-                    value={10}
+                    value={scale}
                     dropdownStyle={{ width: '100px' }}
                     dropdownMatchSelectWidth={100}
+                    onChange={(num) => setScale(num)}
                     options={options}
                 />
-                <Button>+</Button>
+                <Button
+                    onClick={() => {
+                        setScale((prevScale) => (prevScale >= 100 ? 100 : prevScale + 10));
+                    }}>
+                    +
+                </Button>
             </ButtonContainer>
         </ZoomContainer>
     );
