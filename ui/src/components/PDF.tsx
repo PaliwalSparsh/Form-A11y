@@ -133,6 +133,7 @@ const Page = ({ pageInfo, onError }: PageProps) => {
             }
             // this gets bound for parent element not page. In the original codebase the parent was the page.
             pageInfo.bounds = getPageBoundsFromCanvas(canvasRef.current);
+            pageInfo.externalScale = pdfScale;
 
             const renderer = new PDFPageRenderer(pageInfo.page, canvasRef.current, onError);
             // the reasoning behind scale is present in the PDFStore.tsx file.
