@@ -242,6 +242,8 @@ export const PDFPage = () => {
                             doc,
                             pages,
                             onError,
+                            scale: 100,
+                            setScale: () => {},
                         }}>
                         <AnnotationStore.Provider
                             value={{

@@ -116,11 +116,14 @@ export function getNewAnnotation(
 }
 
 export class PDFPageInfo {
+    public externalScale: number;
     constructor(
         public readonly page: PDFPageProxy,
         public readonly tokens: Token[] = [],
         public bounds?: Bounds
-    ) {}
+    ) {
+        this.externalScale = 1;
+    }
 
     getFreeFormAnnotationForBounds(selection: Bounds, label: Label): any {
         if (this.bounds === undefined) {
@@ -190,10 +193,10 @@ export class PDFPageInfo {
 
     getTokenBounds(t: Token): Bounds {
         const b = {
-            left: t.x,
-            top: t.y,
-            right: t.x + t.width,
-            bottom: t.y + t.height,
+            left: t.x * this.externalScale,
+            top: t.y * this.externalScale,
+            right: (t.x + t.width) * this.externalScale,
+            bottom: (t.y + t.height) * this.externalScale,
         };
         return b;
     }
@@ -219,10 +222,17 @@ interface _PDFStore {
     pages?: PDFPageInfo[];
     doc?: PDFDocumentProxy;
     onError: (err: Error) => void;
+    // Scale controls the extent into which we are zoomed into the PDF.
+    scale: number;
+    setScale: (newScale: number) => void;
 }
 
 export const PDFStore = createContext<_PDFStore>({
     onError: (_: Error) => {
         throw new Error('Unimplemented');
+    },
+    scale: 1,
+    setScale: () => {
+        throw new Error('Please use PDFStore inside of its provider.');
     },
 });

@@ -94,6 +94,9 @@ const Page = ({ pageInfo, onError }: PageProps) => {
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const [isVisible, setIsVisible] = useState<boolean>(false);
     const [scale, setScale] = useState<number>(1);
+    const pdfContext = React.useContext(PDFStore);
+    const { scale: rawPdfScale } = pdfContext;
+    const pdfScale = rawPdfScale / 100;
 
     const annotationStore = useContext(AnnotationStore);
 
@@ -130,10 +133,11 @@ const Page = ({ pageInfo, onError }: PageProps) => {
             }
             // this gets bound for parent element not page. In the original codebase the parent was the page.
             pageInfo.bounds = getPageBoundsFromCanvas(canvasRef.current);
+            pageInfo.externalScale = pdfScale;
 
             const renderer = new PDFPageRenderer(pageInfo.page, canvasRef.current, onError);
             // the reasoning behind scale is present in the PDFStore.tsx file.
-            renderer.render(pageInfo.scale);
+            renderer.render(pdfScale * pageInfo.scale);
 
             determinePageVisiblity();
 
@@ -144,8 +148,8 @@ const Page = ({ pageInfo, onError }: PageProps) => {
                 }
                 // it gives x, y, width, height of the DOM element bounds.
                 pageInfo.bounds = getPageBoundsFromCanvas(canvasRef.current);
-                renderer.rescaleAndRender(pageInfo.scale);
-                setScale(pageInfo.scale);
+                renderer.rescaleAndRender(pdfScale * pageInfo.scale);
+                setScale(pdfScale * pageInfo.scale);
                 determinePageVisiblity();
             };
 
@@ -158,7 +162,7 @@ const Page = ({ pageInfo, onError }: PageProps) => {
         } catch (e) {
             onError(e);
         }
-    }, [pageInfo, onError]); // We deliberately only run this once.
+    }, [pageInfo, onError, pdfScale]); // We deliberately only run this when the scale changes.
 
     return (
         <PageAnnotationsContainer
@@ -205,9 +209,17 @@ const Page = ({ pageInfo, onError }: PageProps) => {
                                   annotationStore.freeFormAnnotations
                               );
                               if (newAnnotation) {
+                                  const viewAnnotation = newAnnotation.update({
+                                      bounds: {
+                                          bottom: newAnnotation.bounds.bottom / pdfScale,
+                                          left: newAnnotation.bounds.left / pdfScale,
+                                          right: newAnnotation.bounds.right / pdfScale,
+                                          top: newAnnotation.bounds.top / pdfScale,
+                                      },
+                                  });
                                   annotationStore.setPdfAnnotations(
                                       annotationStore.pdfAnnotations.withNewAnnotation(
-                                          newAnnotation
+                                          viewAnnotation
                                       )
                                   );
                                   // newly created annotation is selected.
@@ -229,13 +241,23 @@ const Page = ({ pageInfo, onError }: PageProps) => {
                 // This is where annotations are rendered.
                 scale &&
                     isVisible &&
-                    annotations.map((annotation) => (
-                        <Selection
-                            pageInfo={pageInfo}
-                            annotation={annotation}
-                            key={annotation.toString()}
-                        />
-                    ))
+                    annotations.map((annotation) => {
+                        const viewAnnotation = annotation.update({
+                            bounds: {
+                                bottom: pdfScale * annotation.bounds.bottom,
+                                top: pdfScale * annotation.bounds.top,
+                                left: pdfScale * annotation.bounds.left,
+                                right: pdfScale * annotation.bounds.right,
+                            },
+                        });
+                        return (
+                            <Selection
+                                pageInfo={pageInfo}
+                                annotation={viewAnnotation}
+                                key={viewAnnotation.toString()}
+                            />
+                        );
+                    })
             }
             {selection && annotationStore.activeLabel
                 ? (() => {
