@@ -95,7 +95,8 @@ const Page = ({ pageInfo, onError }: PageProps) => {
     const [isVisible, setIsVisible] = useState<boolean>(false);
     const [scale, setScale] = useState<number>(1);
     const pdfContext = React.useContext(PDFStore);
-    const { scale: pdfScale } = pdfContext;
+    const { scale: rawPdfScale } = pdfContext;
+    const pdfScale = rawPdfScale / 100;
 
     const annotationStore = useContext(AnnotationStore);
 
@@ -135,7 +136,7 @@ const Page = ({ pageInfo, onError }: PageProps) => {
 
             const renderer = new PDFPageRenderer(pageInfo.page, canvasRef.current, onError);
             // the reasoning behind scale is present in the PDFStore.tsx file.
-            renderer.render((pdfScale / 100) * pageInfo.scale);
+            renderer.render(pdfScale * pageInfo.scale);
 
             determinePageVisiblity();
 
@@ -146,8 +147,8 @@ const Page = ({ pageInfo, onError }: PageProps) => {
                 }
                 // it gives x, y, width, height of the DOM element bounds.
                 pageInfo.bounds = getPageBoundsFromCanvas(canvasRef.current);
-                renderer.rescaleAndRender((pdfScale / 100) * pageInfo.scale);
-                setScale((pdfScale / 100) * pageInfo.scale);
+                renderer.rescaleAndRender(pdfScale * pageInfo.scale);
+                setScale(pdfScale * pageInfo.scale);
                 determinePageVisiblity();
             };
 
@@ -231,13 +232,23 @@ const Page = ({ pageInfo, onError }: PageProps) => {
                 // This is where annotations are rendered.
                 scale &&
                     isVisible &&
-                    annotations.map((annotation) => (
-                        <Selection
-                            pageInfo={pageInfo}
-                            annotation={annotation}
-                            key={annotation.toString()}
-                        />
-                    ))
+                    annotations.map((annotation) => {
+                        const viewAnnotation = annotation.update({
+                            bounds: {
+                                bottom: pdfScale * annotation.bounds.bottom,
+                                top: pdfScale * annotation.bounds.top,
+                                left: pdfScale * annotation.bounds.left,
+                                right: pdfScale * annotation.bounds.right,
+                            },
+                        });
+                        return (
+                            <Selection
+                                pageInfo={pageInfo}
+                                annotation={viewAnnotation}
+                                key={viewAnnotation.toString()}
+                            />
+                        );
+                    })
             }
             {selection && annotationStore.activeLabel
                 ? (() => {
