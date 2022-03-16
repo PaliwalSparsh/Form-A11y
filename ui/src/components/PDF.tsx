@@ -208,9 +208,17 @@ const Page = ({ pageInfo, onError }: PageProps) => {
                                   annotationStore.freeFormAnnotations
                               );
                               if (newAnnotation) {
+                                  const viewAnnotation = newAnnotation.update({
+                                      bounds: {
+                                          bottom: newAnnotation.bounds.bottom / pdfScale,
+                                          left: newAnnotation.bounds.left / pdfScale,
+                                          right: newAnnotation.bounds.right / pdfScale,
+                                          top: newAnnotation.bounds.top / pdfScale,
+                                      },
+                                  });
                                   annotationStore.setPdfAnnotations(
                                       annotationStore.pdfAnnotations.withNewAnnotation(
-                                          newAnnotation
+                                          viewAnnotation
                                       )
                                   );
                                   // newly created annotation is selected.
