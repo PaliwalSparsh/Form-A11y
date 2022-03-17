@@ -309,7 +309,6 @@ const HomeContainer = (props) => {
 
 const ToolPanel = () => {
     const { currentTool, setCurrentTool } = useContext(ToolStore);
-    console.log(currentTool);
     return (
         <>
             {Object.keys(toolType).map((tool) => (
