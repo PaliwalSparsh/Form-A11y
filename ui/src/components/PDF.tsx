@@ -165,7 +165,7 @@ const Page = ({ pageInfo, onError }: PageProps) => {
     }, [pageInfo, onError]); // We deliberately only run this once.
 
     const toolProperties = {
-        [toolType.ARROW]: {
+        [toolType.SHAPE]: {
             onMouseDown: (event) => {
                 if (containerRef.current === null) {
                     throw new Error('No Container');
