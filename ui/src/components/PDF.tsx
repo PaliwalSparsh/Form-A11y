@@ -100,6 +100,7 @@ const Page = ({ pageInfo, onError }: PageProps) => {
 
     const annotationStore = useContext(AnnotationStore);
     const toolStore = useContext(ToolStore);
+    const { zoom } = useContext(PDFStore);
 
     const containerRef = useRef<HTMLDivElement>(null);
     // this selection is not the selectedAnnotations. This is the selection box that is drawn on the page.
@@ -134,6 +135,7 @@ const Page = ({ pageInfo, onError }: PageProps) => {
             }
             // this gets bound for parent element not page. In the original codebase the parent was the page.
             pageInfo.bounds = getPageBoundsFromCanvas(canvasRef.current);
+            pageInfo.zoom = zoom / 100;
 
             const renderer = new PDFPageRenderer(pageInfo.page, canvasRef.current, onError);
             // the reasoning behind scale is present in the PDFStore.tsx file.
@@ -162,7 +164,7 @@ const Page = ({ pageInfo, onError }: PageProps) => {
         } catch (e) {
             onError(e);
         }
-    }, [pageInfo, onError]); // We deliberately only run this once.
+    }, [pageInfo, onError, zoom]);
 
     const toolProperties = {
         [toolType.SHAPE]: {

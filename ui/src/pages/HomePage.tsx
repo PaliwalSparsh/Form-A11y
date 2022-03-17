@@ -64,6 +64,7 @@ export const HomePage = () => {
     // this is turned off by default in pawls.
     const [freeFormAnnotations, toggleFreeFormAnnotations] = useState(false);
     const [hideLabels, setHideLabels] = useState(false);
+    const [zoom, setZoom] = useState<number>(100);
 
     const [relationModalVisible, setRelationModalVisible] = useState(false);
 
@@ -223,6 +224,8 @@ export const HomePage = () => {
                                 doc,
                                 pages,
                                 onError,
+                                zoom,
+                                setZoom,
                             }}>
                             <AnnotationStore.Provider
                                 value={{
