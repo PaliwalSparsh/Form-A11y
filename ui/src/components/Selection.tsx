@@ -4,7 +4,15 @@ import React, { MouseEvent, useContext, useState, useEffect } from 'react';
 import styled, { ThemeContext } from 'styled-components';
 import { Modal, Select } from '@allenai/varnish';
 
-import { Bounds, TokenId, PDFPageInfo, Annotation, AnnotationStore } from '../context';
+import {
+    Bounds,
+    TokenId,
+    PDFPageInfo,
+    Annotation,
+    AnnotationStore,
+    ToolStore,
+    toolType,
+} from '../context';
 import { EditFilled } from '@ant-design/icons';
 import { ActionMenu } from './formA11y';
 
@@ -44,7 +52,10 @@ export const SelectionBoundary = ({
     color,
     bounds,
     children,
-    onClick,
+    onClick = () => {},
+    onMouseDown = () => {},
+    onMouseMove = () => {},
+    onMouseUp = () => {},
     selected,
 }: SelectionBoundaryProps) => {
     const width = bounds.right - bounds.left;
@@ -65,9 +76,9 @@ export const SelectionBoundary = ({
                 onClick(e);
                 e.stopPropagation();
             }}
-            onMouseDown={(e) => {
-                e.stopPropagation();
-            }}
+            onMouseDown={onMouseDown}
+            onMouseMove={onMouseMove}
+            onMouseUp={onMouseUp}
             // this place holds logic for the appearance of selected element.
             style={{
                 position: 'absolute',
@@ -217,11 +228,18 @@ interface SelectionProps {
     showInfo?: boolean;
 }
 
-export const Selection = ({ pageInfo, annotation, showInfo = true }: SelectionProps) => {
+export const Selection = ({
+    pageInfo,
+    annotation,
+    showInfo = true,
+    containerReference,
+}: SelectionProps) => {
     const label = annotation.label;
     const theme = useContext(ThemeContext);
 
     const [isEditLabelModalVisible, setIsEditLabelModalVisible] = useState(false);
+    const toolStore = useContext(ToolStore);
+    const [mouseMovement, setMouseMovement] = useState();
 
     const annotationStore = useContext(AnnotationStore);
 
@@ -269,6 +287,48 @@ export const Selection = ({ pageInfo, annotation, showInfo = true }: SelectionPr
         }
     };
 
+    const toolProperties = {
+        [toolType.ARROW]: {
+            onMouseDown: (e) => {
+                if (!mouseMovement) {
+                    const startX = e.pageX - containerReference?.current.offsetLeft;
+                    const startY = e.pageY - containerReference?.current.offsetTop;
+                    setMouseMovement({ startX, startY, endX: startX, endY: startY });
+                }
+            },
+            onMouseMove: (e) => {
+                if (mouseMovement) {
+                    const endX = e.pageX - containerReference?.current.offsetLeft;
+                    const endY = e.pageY - containerReference?.current.offsetTop;
+
+                    const scaledDeltaX = pageInfo.scale * (endX - mouseMovement.startX);
+                    const scaledDeltaY = pageInfo.scale * (endY - mouseMovement.startY);
+                    console.log('annotation.bounds', annotation.bounds);
+
+                    annotationStore.setPdfAnnotations(
+                        annotationStore.pdfAnnotations
+                            .deleteAnnotation(annotation)
+                            .withNewAnnotation(
+                                annotation.update({
+                                    bounds: {
+                                        bottom: annotation.bounds.bottom + scaledDeltaY,
+                                        left: annotation.bounds.left + scaledDeltaX,
+                                        right: annotation.bounds.right + scaledDeltaX,
+                                        top: annotation.bounds.top + scaledDeltaY,
+                                    },
+                                })
+                            )
+                    );
+                }
+            },
+            onMouseUp: () => {
+                setMouseMovement(undefined);
+            },
+        },
+    };
+
+    const currentToolProperties = toolProperties[toolStore.currentTool];
+
     // Show selection for only the first selected annotation when multiple are selected.
     const isSelected = annotationStore.selectedAnnotations.includes(annotation);
     const totalSelections = annotationStore.selectedAnnotations.length;
@@ -282,6 +342,9 @@ export const Selection = ({ pageInfo, annotation, showInfo = true }: SelectionPr
             <SelectionBoundary
                 color={color}
                 bounds={bounds}
+                onMouseDown={currentToolProperties?.onMouseDown}
+                onMouseMove={currentToolProperties?.onMouseMove}
+                onMouseUp={currentToolProperties?.onMouseUp}
                 onClick={onClick}
                 selected={isSelected}>
                 {showInfoAndLabels ? (
