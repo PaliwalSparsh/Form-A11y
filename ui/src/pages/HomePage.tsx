@@ -62,7 +62,7 @@ export const HomePage = () => {
     const [relationLabels, setRelationLabels] = useState([]);
     const [activeRelationLabel, setActiveRelationLabel] = useState();
     // this is turned off by default in pawls.
-    const [freeFormAnnotations, toggleFreeFormAnnotations] = useState(false);
+    const [freeFormAnnotations, toggleFreeFormAnnotations] = useState(true);
     const [hideLabels, setHideLabels] = useState(false);
     const [zoom, setZoom] = useState<number>(100);
 
@@ -312,7 +312,6 @@ const HomeContainer = (props) => {
 
 const ToolPanel = () => {
     const { currentTool, setCurrentTool } = useContext(ToolStore);
-    console.log(currentTool);
     return (
         <>
             {Object.keys(toolType).map((tool) => (

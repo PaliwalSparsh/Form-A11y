@@ -226,6 +226,8 @@ const Page = ({ pageInfo, onError }: PageProps) => {
 
     const currentToolProperties = toolProperties[toolStore.currentTool];
 
+    console.log('annotations', annotations);
+
     return (
         <PageAnnotationsContainer
             ref={containerRef}
@@ -241,6 +243,7 @@ const Page = ({ pageInfo, onError }: PageProps) => {
                     isVisible &&
                     annotations.map((annotation) => (
                         <Selection
+                            containerReference={containerRef}
                             pageInfo={pageInfo}
                             annotation={annotation}
                             key={annotation.toString()}
