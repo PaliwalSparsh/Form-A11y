@@ -116,11 +116,14 @@ export function getNewAnnotation(
 }
 
 export class PDFPageInfo {
+    zoom: number;
     constructor(
         public readonly page: PDFPageProxy,
         public readonly tokens: Token[] = [],
         public bounds?: Bounds
-    ) {}
+    ) {
+        this.zoom = 1;
+    }
 
     getFreeFormAnnotationForBounds(selection: Bounds, label: Label): any {
         if (this.bounds === undefined) {
@@ -211,7 +214,7 @@ export class PDFPageInfo {
         const domPageWidth = this.bounds.right - this.bounds.left;
 
         // My DOMPage had X size and pdfPage has Y size. I want my pdfPage to fit completely in my DOMPage. So scale it fully.
-        return domPageWidth / pdfPageWidth;
+        return this.zoom * (domPageWidth / pdfPageWidth);
     }
 }
 
@@ -219,10 +222,16 @@ interface _PDFStore {
     pages?: PDFPageInfo[];
     doc?: PDFDocumentProxy;
     onError: (err: Error) => void;
+    zoom: number;
+    setZoom: (num: any) => void;
 }
 
 export const PDFStore = createContext<_PDFStore>({
+    zoom: 100,
     onError: (_: Error) => {
+        throw new Error('Unimplemented');
+    },
+    setZoom: () => {
         throw new Error('Unimplemented');
     },
 });

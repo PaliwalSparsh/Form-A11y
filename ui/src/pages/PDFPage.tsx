@@ -73,6 +73,7 @@ export const PDFPage = () => {
     const [activeRelationLabel, setActiveRelationLabel] = useState<Label>();
     const [freeFormAnnotations, toggleFreeFormAnnotations] = useState<boolean>(false);
     const [hideLabels, setHideLabels] = useState<boolean>(false);
+    const [zoom, setZoom] = useState<number>(100);
 
     const [relationModalVisible, setRelationModalVisible] = useState<boolean>(false);
 
@@ -242,6 +243,8 @@ export const PDFPage = () => {
                             doc,
                             pages,
                             onError,
+                            zoom,
+                            setZoom,
                         }}>
                         <AnnotationStore.Provider
                             value={{
